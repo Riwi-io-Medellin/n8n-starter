@@ -1,0 +1,21 @@
+# Node & general
+node_modules/
+.DS_Store
+*.log
+
+# Python/venv (por si se usa)
+venv/
+.env
+
+# Docker
+Dockerfile.local
+.docker/
+**/.env
+**/.env.local
+
+# n8n data volumes locales (si se llegaran a bind-mount en lugar de volumes)
+.n8n/
+
+# Editor/IDE
+.vscode/
+.idea/
