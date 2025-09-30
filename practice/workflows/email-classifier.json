@@ -1,0 +1,328 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -80,
+        32
+      ],
+      "id": "c487e564-f822-486e-a0e9-32a380cbd7ac",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L1ixAtPvWPVwCCc3",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.subject }}{{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Reclamo",
+              "description": "El usuario expresa una queja o inconformidad sobre un servicio por producto"
+            },
+            {
+              "category": "Soporte",
+              "description": "Solicitud de ayuda tecnica o guia para resolver un problema"
+            },
+            {
+              "category": "Venta",
+              "description": "Mensaje relacionado con la compra de productos o servicios"
+            },
+            {
+              "category": "Otro",
+              "description": "Cuando no esta en ninguna de las otras categorias"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "57f73dd5-e267-44a0-86c5-eab3b9175161",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5",
+          "mode": "list",
+          "cachedResultName": "gpt-5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        240
+      ],
+      "id": "7735d928-217b-40aa-860b-aab6d1a802e3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "XBuC6khb3BTPAT6T",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        48
+      ],
+      "id": "a44724d5-0948-4908-bd82-5645ccd9338b",
+      "name": "Remove label from message",
+      "webhookId": "070d9961-3ae1-4658-8c00-a4510468bab3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L1ixAtPvWPVwCCc3",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_4602082952807598422"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        -192
+      ],
+      "id": "f6932c6b-f7a2-419e-9dcc-52c99bf6853c",
+      "name": "gmail - reclamos",
+      "webhookId": "efeac409-70e4-4074-81f1-3985cdc33498",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L1ixAtPvWPVwCCc3",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_2379022583261672941"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        0
+      ],
+      "id": "1c1dc16c-d7c6-415e-8498-e1866aa88e7d",
+      "name": "gmail - soporte",
+      "webhookId": "efeac409-70e4-4074-81f1-3985cdc33498",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L1ixAtPvWPVwCCc3",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_5807201885607566418"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        160
+      ],
+      "id": "7e3abd61-5e6e-4cb7-9c1f-58784bb79539",
+      "name": "gmail - ventas",
+      "webhookId": "efeac409-70e4-4074-81f1-3985cdc33498",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L1ixAtPvWPVwCCc3",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_4570484592475920964"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        336
+      ],
+      "id": "954ff1e7-6bb6-4a17-b116-284c2f5881ba",
+      "name": "gmail - otros",
+      "webhookId": "efeac409-70e4-4074-81f1-3985cdc33498",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "L1ixAtPvWPVwCCc3",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "gmail - reclamos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "gmail - soporte",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "gmail - ventas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "gmail - otros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gmail - reclamos": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gmail - soporte": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gmail - ventas": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gmail - otros": {
+      "main": [
+        [
+          {
+            "node": "Remove label from message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9b3b1e85-4aee-4cdf-9b7d-f50a96eb3f73",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2ea750b58795fdaa860afd371408b716fdc6a0a91594159605d7517099bb8a98"
+  },
+  "id": "AwtQuDBFgvrtHOhA",
+  "tags": []
+}
