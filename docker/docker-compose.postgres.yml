@@ -29,6 +29,7 @@ services:
       - N8N_PORT=5678
       - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678}
       - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+      - N8N_SECURE_COOKIE=${N8N_SECURE_COOKIE:-false}
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
       - DB_POSTGRESDB_HOST=postgres
